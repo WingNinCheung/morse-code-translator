@@ -4,7 +4,13 @@ import "./App.css";
 function App() {
   const [inputString, setInputString] = useState("");
   const convertString = async () => {
-    const res = await fetch("http://localhost:5001/test");
+    const data = { text: inputString };
+    const res = await fetch("http://localhost:5001/translate/toMorse/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    console.log(await res.json());
   };
 
   return (
@@ -16,7 +22,8 @@ function App() {
         <button onClick={convertString}>Convert</button>
       </div>
       <div className="output">
-        <div>Morse code: </div>
+        <span>Morse code: </span>
+        <span>{inputString}</span>
       </div>
     </div>
   );
