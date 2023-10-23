@@ -36,15 +36,14 @@ const morseCode = {
 };
 
 // Only accept one letter to convert
-app.post("/translate/toMorse", (req, res) => {
-  let inputLetter = req.body.text.toUpperCase();
-  if (inputLetter.trim().length !== 1 || !/[A-Z]/.test(inputLetter)) {
+app.get("/translate/:letter", (req, res) => {
+  const letter = req.params.letter.toUpperCase();
+  if (letter.trim().length !== 1 || !/[A-Z]/.test(letter)) {
     return res
       .status(400)
       .json({ error: "Invalid input. Please only enter one letter" });
   }
-
-  return res.json(morseCode[inputLetter]);
+  return res.json(morseCode[letter]);
 });
 
 // Start the server

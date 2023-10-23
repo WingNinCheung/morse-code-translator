@@ -4,24 +4,34 @@ import "./App.css";
 function App() {
   const [inputString, setInputString] = useState("");
   const [morseCode, setMorseCode] = useState("");
-  const convertString = async () => {
-    const data = { text: inputString };
+
+  const getMorseTranslation = async (letter) => {
     try {
-      const res = await fetch("http://localhost:5001/translate/toMorse/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(`http://localhost:5001/translate/${letter}`);
       if (res.ok) {
         const code = await res.json();
-        setMorseCode(code);
+        return code;
       } else {
         const error = await res.json();
-        setMorseCode(error.error);
+        return error.error;
       }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const convertString = async () => {
+    const promises = [];
+    for (let letter of inputString.trim()) {
+      // use "|" to separate each word
+      if (letter === " ") {
+        promises.push("|");
+      } else {
+        promises.push(getMorseTranslation(letter));
+      }
+    }
+    // resolve them concurrently instead of awaiting each letter on every call
+    setMorseCode((await Promise.all(promises)).join(" "));
   };
 
   return (
