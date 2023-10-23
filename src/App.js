@@ -22,10 +22,12 @@ function App() {
 
   const convertString = async () => {
     const promises = [];
-    for (let letter of inputString.trim()) {
+    for (let letter of inputString.trim().toUpperCase()) {
       // use "|" to separate each word
       if (letter === " ") {
         promises.push("|");
+      } else if (!/[A-Z]/.test(letter)) {
+        return setMorseCode(await getMorseTranslation(letter));
       } else {
         promises.push(getMorseTranslation(letter));
       }
