@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 
+let cachedMorseCode = {};
+
 function App() {
   const [inputString, setInputString] = useState("");
   const [morseCode, setMorseCode] = useState("");
@@ -20,6 +22,7 @@ function App() {
     }
   };
 
+  // Utilize memoization with the cachedMorseCode object to increase time efficiency
   const convertString = async () => {
     const promises = [];
     for (let letter of inputString.trim().toUpperCase()) {
@@ -28,10 +31,14 @@ function App() {
         promises.push("|");
       } else if (!/[A-Z]/.test(letter)) {
         return setMorseCode(await getMorseTranslation(letter));
+      } else if (letter in cachedMorseCode) {
+        promises.push(cachedMorseCode[letter]);
       } else {
-        promises.push(getMorseTranslation(letter));
+        cachedMorseCode[letter] = getMorseTranslation(letter);
+        promises.push(cachedMorseCode[letter]);
       }
     }
+
     // resolve them concurrently instead of awaiting each letter on every call for efficiency
     setMorseCode((await Promise.all(promises)).join(" "));
   };
