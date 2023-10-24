@@ -32,21 +32,30 @@ function App() {
         promises.push(getMorseTranslation(letter));
       }
     }
-    // resolve them concurrently instead of awaiting each letter on every call
+    // resolve them concurrently instead of awaiting each letter on every call for efficiency
     setMorseCode((await Promise.all(promises)).join(" "));
   };
 
   return (
     <div className="App">
-      <h1>Morse Code Translator</h1>
-      <div className="input">
-        <span>Enter text: </span>
-        <input onChange={(e) => setInputString(e.target.value)}></input>
-        <button onClick={convertString}>Convert</button>
-      </div>
-      <div className="output">
-        <span>Morse code: </span>
-        <span>{morseCode}</span>
+      <div className="container">
+        <h1>Morse Code Translator</h1>
+        <div className="body">
+          <div className="input">
+            <span>Enter text: </span>
+            <input
+              onChange={(e) => setInputString(e.target.value)}
+              className="text"
+            ></input>
+            <button onClick={convertString} className="button">
+              Convert
+            </button>
+          </div>
+          <div className="output">
+            <span>Morse code: </span>
+            <span>{morseCode}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
